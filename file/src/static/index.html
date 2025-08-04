@@ -428,3 +428,42 @@
 </html>
 
 
+
+
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Player Profile</h3>
+                <button class="close-button" onclick="closeProfileModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-details">
+                    <p><strong>Player Name:</strong> <span id="profile-player-name"></span></p>
+                    <p><strong>Password:</strong> <span id="profile-player-password"></span></p>
+                    <p><strong>Authorized Key:</strong> <span id="profile-authorized-key"></span></p>
+                    <button class="game-button logout-button" onclick="logoutPlayer()">Logout</button>
+                    <div id="profile-feedback" style="margin-top: 1rem; font-size: 1.1rem;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Clarence Arcade Game Zone. All rights reserved.</p>
+        </div>
+    </footer>
+
+

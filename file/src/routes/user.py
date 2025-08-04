@@ -299,13 +299,10 @@ def change_password():
         'message': 'Password changed successfully'
     })
 
-@user_bp.route('/players/profile', methods=['GET'])
-def get_player_profile():
+@user_bp.route("/players/profile/<int:player_id>", methods=["GET"])
+def get_player_profile(player_id):
     """Get current player's profile including authorized key"""
-    if 'player_id' not in session:
-        return jsonify({'error': 'Not logged in'}), 401
-    
-    player = Player.query.get(session['player_id'])
+    player = Player.query.get(player_id)
     if not player:
         return jsonify({'error': 'Player not found'}), 404
     

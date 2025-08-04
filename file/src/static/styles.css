@@ -57,7 +57,10 @@ body {
     50% { transform: translateY(-20px) rotate(1deg); }
 }
 
-/* Header Styles */
+/* Modal Styles */
+.modal.active footer {
+    display: none;
+}/
 .header {
     position: fixed;
     top: 0;
@@ -589,7 +592,9 @@ body {
     color: var(--primary-color);
 }
 
-/* Modal Styles */
+.modal.active footer {
+    display: none;
+}
 .modal {
     display: none;
     position: fixed;

@@ -1508,3 +1508,70 @@ function toggleAuthKeyVisibility() {
         eyeIcon.classList.add('fa-eye');
     }
 }
+
+
+// Profile Modal Functions
+function showProfileModal() {
+    closeAllModals();
+    const modal = document.getElementById("profile-modal");
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+    loadProfileData();
+}
+
+function closeProfileModal() {
+    const modal = document.getElementById("profile-modal");
+    modal.classList.remove("active");
+    document.body.style.overflow = "auto";
+}
+
+async function loadProfileData() {
+    const profileFeedback = document.getElementById("profile-feedback");
+    if (!currentPlayer || !currentPlayer.id) {
+        profileFeedback.innerHTML = "<span style=\"color: #dc3545;\">Please log in to view your profile.</span>";
+        alert("Please log in to view your profile.");
+        return;
+    }
+    profileFeedback.innerHTML = "Loading profile...";
+    try {
+        const response = await fetch(`/api/players/profile/${currentPlayer.id}`);
+        if (response.ok) {
+            const data = await response.json();
+            document.getElementById("profile-player-name").textContent = data.name;
+            document.getElementById("profile-player-password").textContent = "********"; // Mask password
+            document.getElementById("profile-authorized-key").textContent = data.authorized_key || "N/A";
+            profileFeedback.innerHTML = "";
+        } else {
+            const errorData = await response.json();
+            profileFeedback.innerHTML = `<span style="color: #dc3545;">${errorData.error || "Failed to load profile"}</span>`;
+            alert(errorData.error || "Failed to load profile");
+        }
+    } catch (error) {
+        console.error("Error loading profile:", error);
+        profileFeedback.innerHTML = "<span style=\"color: #dc3545;\">Failed to load profile. Please try again.</span>";
+        alert("Failed to load profile");
+    }
+}
+
+async function logoutPlayer() {
+    try {
+        const response = await fetch("/api/players/logout", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
+        });
+        if (response.ok) {
+            currentPlayer = null;
+            updatePlayerUI();
+            closeProfileModal();
+            alert("Logged out successfully!");
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || "Failed to logout");
+        }
+    } catch (error) {
+        console.error("Error logging out:", error);
+        alert("Failed to logout");
+    }
+}
+
+
