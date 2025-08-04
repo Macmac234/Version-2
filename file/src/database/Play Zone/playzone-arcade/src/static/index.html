@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlayZone Arcade - Simple & Fun Games</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <i class="fas fa-gamepad"></i>
+                <span>PlayZone Arcade</span>
+            </div>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#games" class="nav-link">Games</a>
+                <a href="#leaderboard" class="nav-link">Leaderboard</a>
+                <a href="#about" class="nav-link">About</a>
+            </div>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <!-- Home Section -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    Welcome to <span class="gradient-text">PlayZone Arcade</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Experience the thrill of classic games with modern design. 
+                    Challenge yourself with 5 exciting games!
+                </p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number">5</span>
+                        <span class="stat-label">Games</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">∞</span>
+                        <span class="stat-label">Fun</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Free</span>
+                    </div>
+                </div>
+                <button class="cta-button" onclick="scrollToGames()">
+                    <span>Start Playing</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            <div class="hero-visual">
+                <div class="floating-elements">
+                    <div class="floating-element" style="--delay: 0s">🎮</div>
+                    <div class="floating-element" style="--delay: 1s">🎯</div>
+                    <div class="floating-element" style="--delay: 2s">🏆</div>
+                    <div class="floating-element" style="--delay: 3s">⭐</div>
+                    <div class="floating-element" style="--delay: 4s">🎲</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="games-section">
+            <div class="container">
+                <h2 class="section-title">Choose Your Game</h2>
+                <p class="section-subtitle">Pick your favorite and start the adventure!</p>
+                
+                <div class="games-grid">
+                    <div class="game-card" data-game="number-guess">
+                        <div class="game-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <h3 class="game-title">Number Guessing</h3>
+                        <p class="game-description">
+                            Test your intuition! Guess the secret number with helpful hints.
+                        </p>
+                        <div class="game-features">
+                            <span class="feature">3 Difficulty Levels</span>
+                            <span class="feature">Smart Hints</span>
+                        </div>
+                        <button class="play-button" onclick="startGame('number-guess')">
+                            <span>Play Now</span>
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+                    <div class="game-card" data-game="rps">
+                        <div class="game-icon">
+                            <i class="fas fa-hand-rock"></i>
+                        </div>
+                        <h3 class="game-title">Rock Paper Scissors</h3>
+                        <p class="game-description">
+                            Classic game with a twist! Beat the computer in this timeless battle.
+                        </p>
+                        <div class="game-features">
+                            <span class="feature">Animated Choices</span>
+                            <span class="feature">Score Tracking</span>
+                        </div>
+                        <button class="play-button" onclick="startGame('rps')">
+                            <span>Play Now</span>
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+                    <div class="game-card" data-game="tictactoe">
+                        <div class="game-icon">
+                            <i class="fas fa-th"></i>
+                        </div>
+                        <h3 class="game-title">Tic Tac Toe</h3>
+                        <p class="game-description">
+                            Strategic thinking meets classic fun! Challenge our smart AI opponent.
+                        </p>
+                        <div class="game-features">
+                            <span class="feature">Smart AI</span>
+                            <span class="feature">Win Animations</span>
+                        </div>
+                        <button class="play-button" onclick="startGame('tictactoe')">
+                            <span>Play Now</span>
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+                    <div class="game-card" data-game="memory">
+                        <div class="game-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="game-title">Memory Cards</h3>
+                        <p class="game-description">
+                            Train your memory! Find matching pairs in this colorful card game.
+                        </p>
+                        <div class="game-features">
+                            <span class="feature">Multiple Sizes</span>
+                            <span class="feature">Flip Animations</span>
+                        </div>
+                        <button class="play-button" onclick="startGame('memory')">
+                            <span>Play Now</span>
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+
+                    <div class="game-card" data-game="snake">
+                        <div class="game-icon">
+                            <i class="fas fa-snake"></i>
+                        </div>
+                        <h3 class="game-title">Snake Game</h3>
+                        <p class="game-description">
+                            Nostalgic arcade action! Guide your snake to eat food and grow longer.
+                        </p>
+                        <div class="game-features">
+                            <span class="feature">Smooth Movement</span>
+                            <span class="feature">High Scores</span>
+                        </div>
+                        <button class="play-button" onclick="startGame('snake')">
+                            <span>Play Now</span>
+                            <i class="fas fa-play"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Leaderboard Section -->
+        <section id="leaderboard" class="leaderboard-section">
+            <div class="container">
+                <h2 class="section-title">Leaderboard</h2>
+                <p class="section-subtitle">See how you stack up against other players!</p>
+                
+                <div class="leaderboard-tabs">
+                    <button class="tab-button active" data-game="number_guess">Number Guess</button>
+                    <button class="tab-button" data-game="memory">Memory</button>
+                    <button class="tab-button" data-game="snake">Snake</button>
+                </div>
+                
+                <div class="leaderboard-content">
+                    <div class="leaderboard-table" id="leaderboard-table">
+                        <!-- Leaderboard data will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <h2 class="section-title">About PlayZone Arcade</h2>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p>
+                            PlayZone Arcade brings you the best of classic gaming with a modern twist. 
+                            Our collection of 5 carefully crafted games offers endless entertainment 
+                            for players of all ages.
+                        </p>
+                        <p>
+                            Built with cutting-edge web technologies, each game features smooth animations, 
+                            responsive design, and engaging gameplay mechanics that will keep you coming back for more.
+                        </p>
+                        <div class="features-list">
+                            <div class="feature-item">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>Mobile Responsive</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-bolt"></i>
+                                <span>Lightning Fast</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-heart"></i>
+                                <span>Made with Love</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Game Modal -->
+    <div id="game-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title">Game</h3>
+                <button class="close-button" onclick="closeGameModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Game content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 PlayZone Arcade. Made with ❤️ for gamers everywhere.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Player - Clarence Arcade Game Zone</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="background-animation"></div>
+    
+    <header class="header">
+        <nav class="nav">
+            <div class="nav-brand">
+                <i class="fas fa-gamepad"></i>
+                <span>Clarence Arcade Game Zone</span>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="index.html#games" class="nav-link">Games</a>
+                <a href="index.html#leaderboard" class="nav-link">Leaderboard</a>
+                <a href="index.html#about" class="nav-link">About</a>
+                <a href="#create-player" class="nav-link active">Create Player Name</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <section id="create-player" class="create-player-section">
+            <div class="container">
+                <h2 class="section-title">Create Player Account</h2>
+                <p class="section-subtitle">Register to track your scores and compete on the leaderboard!</p>
+                
+                <div class="form-container">
+                    <form id="player-form" class="player-form">
+                        <div class="form-group">
+                            <label for="player-name">Player Name</label>
+                            <input type="text" id="player-name" name="playerName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="confirm-password">Confirm Password</label>
+                            <input type="password" id="confirm-password" name="confirmPassword" required>
+                        </div>
+                        
+                        <button type="submit" class="submit-button">
+                            <span>Create Account</span>
+                            <i class="fas fa-user-plus"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 PlayZone Arcade. Made by Mark Clarence M. Cruz for gamers everywhere.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

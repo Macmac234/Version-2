@@ -4,19 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clarence Arcade Game Zone - Simple & Fun Games</title>
-    
-    <!-- Open Graph Meta Tags for better link previews -->
-    <meta property="og:title" content="Clarence Arcade Game Zone - Simple & Fun Games">
-    <meta property="og:description" content="Maglaro at mag-enjoy libre lang ito! Play 5 exciting games including Snake, Memory Cards, Tic Tac Toe, Rock Paper Scissors, and Number Guessing.">
-    <meta property="og:image" content="https://cagz.onrender.com/mypicture.png">
-    <meta property="og:url" content="https://cagz.onrender.com">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Clarence Arcade Game Zone">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Clarence Arcade Game Zone - Simple & Fun Games">
-    <meta name="twitter:description" content="Maglaro at mag-enjoy libre lang ito! Play 5 exciting games for free.">
-    <meta name="twitter:image" content="https://cagz.onrender.com/mypicture.png">
-    
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Inter:wght@300;400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -32,12 +19,10 @@
             </div>
             <div class="nav-links">
                 <a href="#home" class="nav-link active">Home</a>
-                <a href="#games" class="nav-link">Game</a>
+                <a href="#games" class="nav-link">Games</a>
                 <a href="#leaderboard" class="nav-link">Leaderboard</a>
                 <a href="#about" class="nav-link">About</a>
-                <a href="#" class="nav-link" onclick="showCreatePlayerModal()">Create New</a>
-                <a href="#" class="nav-link" onclick="showLoginModal()">Log in</a>
-                <a href="#" class="nav-link" onclick="showProfileModal()" id="profile-link" style="display: none;">Profile</a>
+                <a href="#" class="nav-link" onclick="showCreatePlayerModal()">Create Player Name</a>
             </div>
             <div class="nav-toggle">
                 <span></span>
@@ -269,7 +254,7 @@
     <div id="create-player-modal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Create New Player Name</h3>
+                <h3>Create Your Player Name</h3>
                 <button class="close-button" onclick="closeCreatePlayerModal()">
                     <i class="fas fa-times"></i>
                 </button>
@@ -277,145 +262,14 @@
             <div class="modal-body">
                 <div class="player-registration-form">
                     <p style="color: var(--text-gray); margin-bottom: 1.5rem;">Register to track your game history and points!</p>
-                    <input type="text" id="player-name-input" class="game-input" placeholder="Enter New Player Name">
-                    <input type="password" id="player-password-input" class="game-input" placeholder="Enter New Password">
-                    <button class="game-button" id="register-button" onclick="registerPlayer()">Register</button>
+                    <input type="text" id="player-name-input" class="game-input" placeholder="Enter Player Name">
+                    <input type="password" id="player-password-input" class="game-input" placeholder="Enter Password">
+                    <button class="game-button" onclick="registerPlayer()">Register</button>
                     <div id="registration-feedback" style="margin-top: 1rem; font-size: 1.1rem;"></div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Login Modal -->
-    <div id="login-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Log in</h3>
-                <button class="close-button" onclick="closeLoginModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="login-form">
-                    <input type="text" id="login-name-input" class="game-input" placeholder="Enter Player Name">
-                    <input type="password" id="login-password-input" class="game-input" placeholder="Enter Password">
-                    <a href="#" onclick="showForgotPasswordModal()" style="color: var(--primary-color); text-decoration: none; display: block; margin-bottom: 1rem;">Forgot Password?</a>
-                    <button class="game-button" onclick="loginPlayer()">Continue</button>
-                    <div id="login-feedback" style="margin-top: 1rem; font-size: 1.1rem;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Forgot Password Modal -->
-    <div id="forgot-password-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="back-button" onclick="showLoginModal()">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <h3>Forgot Password?</h3>
-                <button class="close-button" onclick="closeForgotPasswordModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="forgot-password-form">
-                    <p style="color: var(--text-gray); margin-bottom: 1.5rem;">Contact support to reset your password.</p>
-                    <button class="game-button" onclick="showLoginModal()">Back to Login</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Authorized Key Verification Modal -->
-    <div id="auth-key-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="back-button" onclick="showForgotPasswordModal()">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <h3>Player Found</h3>
-                <button class="close-button" onclick="closeAuthKeyModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="auth-key-form">
-                    <p style="color: var(--text-white); margin-bottom: 1.5rem;">Enter your Authorized Key to change password:</p>
-                    <div class="password-input-container">
-                        <input type="password" id="auth-key-input" class="game-input" placeholder="Enter 7-digit Authorized Key" maxlength="7">
-                        <button class="eye-toggle" onclick="toggleAuthKeyVisibility()" type="button">
-                            <i class="fas fa-eye" id="auth-key-eye"></i>
-                        </button>
-                    </div>
-                    <button class="game-button" onclick="verifyAuthKey()">Verify</button>
-                    <div id="auth-key-feedback" style="margin-top: 1rem; font-size: 1.1rem;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Change Password Modal -->
-    <div id="change-password-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="back-button" onclick="showAuthKeyModal()">
-                    <i class="fas fa-arrow-left"></i> Back
-                </button>
-                <h3>Change Password:</h3>
-                <button class="close-button" onclick="closeChangePasswordModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="change-password-form">
-                    <input type="password" id="new-password-input" class="game-input" placeholder="New Password">
-                    <button class="game-button" onclick="changePassword()">Continue</button>
-                    <p style="color: var(--text-gray); margin-top: 1rem; text-align: center;">This will return to Home page.</p>
-                    <div id="change-password-feedback" style="margin-top: 1rem; font-size: 1.1rem;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Player Profile Modal -->
-    <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Player Profile</h3>
-                <button class="close-button" onclick="closeProfileModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="profile-form">
-                    <div class="profile-field">
-                        <label>Player Name:</label>
-                        <input type="text" id="profile-name" class="game-input" readonly>
-                    </div>
-                    <div class="profile-field">
-                        <label>Password:</label>
-                        <div class="password-input-container">
-                            <input type="password" id="profile-password" class="game-input" readonly>
-                            <button class="eye-toggle" onclick="togglePasswordVisibility()" type="button">
-                                <i class="fas fa-eye" id="password-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="profile-field">
-                        <label>Authorized Key:</label>
-                        <div class="password-input-container">
-                            <input type="password" id="profile-auth-key" class="game-input" readonly>
-                            <button class="eye-toggle" onclick="toggleAuthKeyProfileVisibility()" type="button">
-                                <i class="fas fa-eye" id="auth-key-profile-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <button class="game-button" onclick="logoutPlayer()" style="background: #dc3545; margin-top: 1rem;">Logout</button>
-                </div>
-            </div>
-        </div>
 
     <footer class="footer">
         <div class="container">
@@ -426,44 +280,4 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-
-
-
-    <!-- Profile Modal -->
-    <div id="profile-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Player Profile</h3>
-                <button class="close-button" onclick="closeProfileModal()">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="profile-details">
-                    <p><strong>Player Name:</strong> <span id="profile-player-name"></span></p>
-                    <p><strong>Password:</strong> <span id="profile-player-password"></span></p>
-                    <p><strong>Authorized Key:</strong> <span id="profile-authorized-key"></span></p>
-                    <button class="game-button logout-button" onclick="logoutPlayer()">Logout</button>
-                    <div id="profile-feedback" style="margin-top: 1rem; font-size: 1.1rem;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-
-    <script src="script.js"></script>
-</body>
-</html>
-
-
-
-
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Clarence Arcade Game Zone. All rights reserved.</p>
-        </div>
-    </footer>
-
 

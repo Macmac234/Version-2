@@ -15,33 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadPlayerBestScores();
 });
 
-// Custom smooth scroll function with better control
-function smoothScrollTo(target) {
-    const targetPosition = target.offsetTop - 80; // Offset for fixed header
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    const duration = 1000; // 1 second duration for smooth scroll
-    let start = null;
-    
-    function animation(currentTime) {
-        if (start === null) start = currentTime;
-        const timeElapsed = currentTime - start;
-        const run = ease(timeElapsed, startPosition, distance, duration);
-        window.scrollTo(0, run);
-        if (timeElapsed < duration) requestAnimationFrame(animation);
-    }
-    
-    // Easing function for smooth animation
-    function ease(t, b, c, d) {
-        t /= d / 2;
-        if (t < 1) return c / 2 * t * t + b;
-        t--;
-        return -c / 2 * (t * (t - 2) - 1) + b;
-    }
-    
-    requestAnimationFrame(animation);
-}
-
 // Navigation functionality
 function initializeNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
@@ -58,8 +31,11 @@ function initializeNavigation() {
                 navLinks.forEach(l => l.classList.remove('active'));
                 this.classList.add('active');
                 
-                // Custom smooth scroll to section
-                smoothScrollTo(targetSection);
+                // Smooth scroll to section
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
         });
     });
@@ -77,10 +53,10 @@ function initializeNavigation() {
 
 // Scroll to games section
 function scrollToGames() {
-    const gamesSection = document.getElementById('games');
-    if (gamesSection) {
-        smoothScrollTo(gamesSection);
-    }
+    document.getElementById('games').scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+    });
 }
 
 // Initialize animations and interactions
@@ -112,31 +88,19 @@ function initializeAnimations() {
 // Player management
 async function checkCurrentPlayer() {
     try {
-        const response = await fetch("/api/players/current");
+        const response = await fetch('/api/players/current');
         if (response.ok) {
             const data = await response.json();
             currentPlayer = data;
             updatePlayerUI();
-        } else {
-            // If not logged in, clear currentPlayer
-            currentPlayer = null;
-            updatePlayerUI();
         }
     } catch (error) {
-        console.log("Error checking current player:", error);
-        currentPlayer = null;
-        updatePlayerUI();
+        console.log('No player logged in');
     }
 }
 
 function updatePlayerUI() {
-    // Show/hide profile link based on login status
-    const profileLink = document.getElementById('profile-link');
-    if (currentPlayer && profileLink) {
-        profileLink.style.display = 'block';
-    } else if (profileLink) {
-        profileLink.style.display = 'none';
-    }
+    // You can add UI updates here to show logged in player
     console.log('Current player:', currentPlayer);
     loadPlayerBestScores();
 }
@@ -202,7 +166,7 @@ async function registerPlayer() {
     const password = passwordInput.value.trim();
     
     if (!name || !password) {
-        feedback.innerHTML = '<span style="color: #dc3545;">Please enter name and password!</span>';
+        feedback.innerHTML = '<span style="color: #dc3545;">Please enter both name and password!</span>';
         return;
     }
     
@@ -217,8 +181,6 @@ async function registerPlayer() {
         
         if (response.ok) {
             currentPlayer = data.player;
-            // Save to local storage as backup (consider removing this if backend is primary source of truth)
-            // savePlayerToStorage({ name, password });
             feedback.innerHTML = '<span style="color: #28a745;">Registration successful! You are now logged in.</span>';
             nameInput.value = '';
             passwordInput.value = '';
@@ -237,8 +199,8 @@ async function registerPlayer() {
             }
         }
     } catch (error) {
-        console.error("Error registering player:", error);
-        feedback.innerHTML = 	erase<span style="color: #dc3545;">An error occurred during registration.</span>
+        console.error('Error registering player:', error);
+        feedback.innerHTML = '<span style="color: #dc3545;">Error registering player. Please try again.</span>';
     }
 }
 
@@ -268,211 +230,6 @@ async function addScore(gameType, points, attempts = 0, difficulty = 'medium') {
     } catch (error) {
         console.error('Error adding score:', error);
     }
-}
-
-// Local Storage Functions for Player Data
-function getPlayersFromStorage() {
-    const players = localStorage.getItem('cagz_players');
-    return players ? JSON.parse(players) : [];
-}
-
-function savePlayerToStorage(player) {
-    const players = getPlayersFromStorage();
-    players.push(player);
-    localStorage.setItem('cagz_players', JSON.stringify(players));
-}
-
-function updatePlayerPassword(playerName, newPassword) {
-    const players = getPlayersFromStorage();
-    const playerIndex = players.findIndex(p => p.name === playerName);
-    if (playerIndex !== -1) {
-        players[playerIndex].password = newPassword;
-        localStorage.setItem('cagz_players', JSON.stringify(players));
-        return true;
-    }
-    return false;
-}
-
-// Login Modal Functions
-function showLoginModal() {
-    closeAllModals();
-    const modal = document.getElementById('login-modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Clear previous inputs
-    document.getElementById('login-name-input').value = '';
-    document.getElementById('login-password-input').value = '';
-    document.getElementById('login-feedback').innerHTML = '';
-}
-
-function closeLoginModal() {
-    const modal = document.getElementById('login-modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-async function loginPlayer() {
-    const nameInput = document.getElementById('login-name-input');
-    const passwordInput = document.getElementById('login-password-input');
-    const feedback = document.getElementById('login-feedback');
-    
-    const name = nameInput.value.trim();
-    const password = passwordInput.value.trim();
-    
-    if (!name || !password) {
-        feedback.innerHTML = '<span style="color: #dc3545;">Please enter both name and password!</span>';
-        return;
-    }
-    
-    try {
-        const response = await fetch('/api/players/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, password })
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-            currentPlayer = data.player;
-            // Also ensure local storage is updated if it's still being used for some fallback or initial load
-            localStorage.setItem("cagz_current_player", JSON.stringify(currentPlayer));
-
-// Forgot Password Modal Functions
-function showForgotPasswordModal() {
-    closeAllModals();
-    const modal = document.getElementById('forgot-password-modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeForgotPasswordModal() {
-    const modal = document.getElementById('forgot-password-modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-// Player Selection Modal Functions
-let selectedPlayerData = null;
-let selectedAction = null;
-
-function selectPlayer(player) {
-    selectedPlayerData = player;
-    showPlayerSelectionModal();
-}
-
-function showPlayerSelectionModal() {
-    closeAllModals();
-    const modal = document.getElementById('player-selection-modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    document.getElementById('selected-player-name').textContent = selectedPlayerData.name;
-    document.getElementById('selection-feedback').innerHTML = '';
-    
-    selectedAction = null;
-}
-
-function closePlayerSelectionModal() {
-    const modal = document.getElementById('player-selection-modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-function chooseAction(action) {
-    selectedAction = action;
-    const feedback = document.getElementById('selection-feedback');
-    feedback.innerHTML = `<span style="color: #28a745;">Selected: ${action === 'see' ? 'See Password' : 'Change Password'}</span>`;
-}
-
-function selectPlayerAction(action) {
-    selectedAction = action;
-    // Simplified - directly proceed with the action
-    if (action === 'see') {
-        showPasswordShowModal();
-    } else if (action === 'change') {
-        showChangePasswordModal();
-    }
-}
-
-// Password Show Modal Functions
-function showPasswordShowModal() {
-    closeAllModals();
-    const modal = document.getElementById('password-show-modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    document.getElementById('displayed-password').textContent = selectedPlayerData.password;
-}
-
-function closePasswordShowModal() {
-    const modal = document.getElementById('password-show-modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-// Change Password Modal Functions
-function showChangePasswordModal() {
-    closeAllModals();
-    const modal = document.getElementById('change-password-modal');
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    document.getElementById('new-password-input').value = '';
-    document.getElementById('change-password-feedback').innerHTML = '';
-}
-
-function closeChangePasswordModal() {
-    const modal = document.getElementById('change-password-modal');
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-}
-
-function updatePassword() {
-    const newPasswordInput = document.getElementById('new-password-input');
-    const feedback = document.getElementById('change-password-feedback');
-    
-    const newPassword = newPasswordInput.value.trim();
-    
-    if (!newPassword) {
-        feedback.innerHTML = '<span style="color: #dc3545;">Please enter a new password!</span>';
-        return;
-    }
-    
-    const success = updatePlayerPassword(selectedPlayerData.name, newPassword);
-    
-    if (success) {
-        feedback.innerHTML = '<span style="color: #28a745;">Password updated successfully!</span>';
-        setTimeout(() => {
-            closeChangePasswordModal();
-            showLoginModal();
-        }, 2000);
-    } else {
-        feedback.innerHTML = '<span style="color: #dc3545;">Error updating password!</span>';
-    }
-}
-
-// Utility function to close all modals
-function closeAllModals() {
-    const modals = [
-        'create-player-modal',
-        'login-modal', 
-        'forgot-password-modal',
-        'search-results-modal',
-        'player-selection-modal',
-        'password-show-modal',
-        'change-password-modal'
-    ];
-    
-    modals.forEach(modalId => {
-        const modal = document.getElementById(modalId);
-        if (modal) {
-            modal.classList.remove('active');
-        }
-    });
-    
-    document.body.style.overflow = 'auto';
 }
 
 // Game management functions
@@ -1339,36 +1096,12 @@ function showNotification(message, type = 'info') {
 document.addEventListener('click', function(e) {
     const gameModal = document.getElementById('game-modal');
     const createPlayerModal = document.getElementById('create-player-modal');
-    const loginModal = document.getElementById('login-modal');
-    const forgotPasswordModal = document.getElementById('forgot-password-modal');
-    const searchResultsModal = document.getElementById('search-results-modal');
-    const playerSelectionModal = document.getElementById('player-selection-modal');
-    const passwordShowModal = document.getElementById('password-show-modal');
-    const changePasswordModal = document.getElementById('change-password-modal');
     
     if (e.target === gameModal) {
         closeGameModal();
     }
     if (e.target === createPlayerModal) {
         closeCreatePlayerModal();
-    }
-    if (e.target === loginModal) {
-        closeLoginModal();
-    }
-    if (e.target === forgotPasswordModal) {
-        closeForgotPasswordModal();
-    }
-    if (e.target === searchResultsModal) {
-        closeSearchResultsModal();
-    }
-    if (e.target === playerSelectionModal) {
-        closePlayerSelectionModal();
-    }
-    if (e.target === passwordShowModal) {
-        closePasswordShowModal();
-    }
-    if (e.target === changePasswordModal) {
-        closeChangePasswordModal();
     }
 });
 
@@ -1401,170 +1134,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
-
-
-
-
-// Global variables for password recovery flow
-let foundPlayerId = null;
-
-// Modal management functions
-function showProfileModal() {
-    if (!currentPlayer) {
-        alert('Please log in first');
-        return;
-    }
-    loadPlayerProfile();
-    document.getElementById('profile-modal').style.display = 'flex';
-}
-
-function closeProfileModal() {
-    document.getElementById('profile-modal').style.display = 'none';
-}
-
-function showAuthKeyModal() {
-    document.getElementById('auth-key-modal').style.display = 'flex';
-}
-
-function closeAuthKeyModal() {
-    document.getElementById('auth-key-modal').style.display = 'none';
-}
-
-function showChangePasswordModal() {
-    document.getElementById('change-password-modal').style.display = 'flex';
-}
-
-function closeChangePasswordModal() {
-    document.getElementById('change-password-modal').style.display = 'none';
-}
-
-// Load player profile data
-async function loadPlayerProfile() {
-    try {
-        const response = await fetch('/api/players/profile');
-        if (response.ok) {
-            const player = await response.json();
-            document.getElementById('profile-name').value = player.name;
-            document.getElementById('profile-password').value = player.password;
-            document.getElementById('profile-auth-key').value = player.authorized_key;
-        } else {
-            alert('Failed to load profile');
-        }
-    } catch (error) {
-        console.error('Error loading profile:', error);
-        alert('Error loading profile');
-    }
-}
-
-// Password visibility toggle functions
-function togglePasswordVisibility() {
-    const passwordInput = document.getElementById('profile-password');
-    const eyeIcon = document.getElementById('password-eye');
-    
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-    } else {
-        passwordInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-    }
-}
-
-function toggleAuthKeyProfileVisibility() {
-    const authKeyInput = document.getElementById('profile-auth-key');
-    const eyeIcon = document.getElementById('auth-key-profile-eye');
-    
-    if (authKeyInput.type === 'password') {
-        authKeyInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-    } else {
-        authKeyInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-    }
-}
-
-function toggleAuthKeyVisibility() {
-    const authKeyInput = document.getElementById('auth-key-input');
-    const eyeIcon = document.getElementById('auth-key-eye');
-    
-    if (authKeyInput.type === 'password') {
-        authKeyInput.type = 'text';
-        eyeIcon.classList.remove('fa-eye');
-        eyeIcon.classList.add('fa-eye-slash');
-    } else {
-        authKeyInput.type = 'password';
-        eyeIcon.classList.remove('fa-eye-slash');
-        eyeIcon.classList.add('fa-eye');
-    }
-}
-
-
-// Profile Modal Functions
-function showProfileModal() {
-    closeAllModals();
-    const modal = document.getElementById("profile-modal");
-    modal.classList.add("active");
-    document.body.style.overflow = "hidden";
-    loadProfileData();
-}
-
-function closeProfileModal() {
-    const modal = document.getElementById("profile-modal");
-    modal.classList.remove("active");
-    document.body.style.overflow = "auto";
-}
-
-async function loadProfileData() {
-    const profileFeedback = document.getElementById("profile-feedback");
-    if (!currentPlayer || !currentPlayer.id) {
-        profileFeedback.innerHTML = "<span style=\"color: #dc3545;\">Please log in to view your profile.</span>";
-        alert("Please log in to view your profile.");
-        return;
-    }
-    profileFeedback.innerHTML = "Loading profile...";
-    try {
-        const response = await fetch(`/api/players/profile/${currentPlayer.id}`);
-        if (response.ok) {
-            const data = await response.json();
-            document.getElementById("profile-player-name").textContent = data.name;
-            document.getElementById("profile-player-password").textContent = "********"; // Mask password
-            document.getElementById("profile-authorized-key").textContent = data.authorized_key || "N/A";
-            profileFeedback.innerHTML = "";
-        } else {
-            const errorData = await response.json();
-            profileFeedback.innerHTML = `<span style="color: #dc3545;">${errorData.error || "Failed to load profile"}</span>`;
-            alert(errorData.error || "Failed to load profile");
-        }
-    } catch (error) {
-        console.error("Error loading profile:", error);
-        profileFeedback.innerHTML = "<span style=\"color: #dc3545;\">Failed to load profile. Please try again.</span>";
-        alert("Failed to load profile");
-    }
-}
-
-async function logoutPlayer() {
-    try {
-        const response = await fetch("/api/players/logout", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" }
-        });
-        if (response.ok) {
-            currentPlayer = null;
-            updatePlayerUI();
-            closeProfileModal();
-            alert("Logged out successfully!");
-        } else {
-            const errorData = await response.json();
-            alert(errorData.error || "Failed to logout");
-        }
-    } catch (error) {
-        console.error("Error logging out:", error);
-        alert("Failed to logout");
-    }
-}
 
 

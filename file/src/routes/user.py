@@ -85,12 +85,12 @@ def login_player():
         return jsonify({'error': 'Invalid credentials'}), 401
     
     # Store player in session
-    session["player_id"] = player.id
-    session["player_name"] = player.name
+    session['player_id'] = player.id
+    session['player_name'] = player.name
     
     return jsonify({
-        "message": "Login successful",
-        "player": player.to_dict()
+        'message': 'Login successful',
+        'player': player.to_dict()
     })
 
 @user_bp.route('/players/current', methods=['GET'])
@@ -231,88 +231,6 @@ def clear_duplicate_scores():
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
-
-@user_bp.route('/players/search', methods=['POST'])
-def search_player():
-    """Search for a player by name for password recovery"""
-    data = request.json
-    name = data.get('name')
-    
-    if not name:
-        return jsonify({'error': 'Player name is required'}), 400
-    
-    # Find player by name
-    player = Player.query.filter_by(name=name).first()
-    if not player:
-        return jsonify({'error': 'Player not found'}), 404
-    
-    return jsonify({
-        'message': 'Player found',
-        'player': {
-            'id': player.id,
-            'name': player.name
-        }
-    })
-
-@user_bp.route('/players/verify-key', methods=['POST'])
-def verify_authorized_key():
-    """Verify authorized key for password recovery"""
-    data = request.json
-    player_id = data.get('player_id')
-    authorized_key = data.get('authorized_key')
-    
-    if not player_id or not authorized_key:
-        return jsonify({'error': 'Player ID and authorized key are required'}), 400
-    
-    # Find player and verify key
-    player = Player.query.get(player_id)
-    if not player:
-        return jsonify({'error': 'Player not found'}), 404
-    
-    if player.authorized_key != authorized_key:
-        return jsonify({'error': 'Invalid authorized key'}), 401
-    
-    return jsonify({
-        'message': 'Authorized key verified',
-        'player_id': player.id
-    })
-
-@user_bp.route('/players/change-password', methods=['POST'])
-def change_password():
-    """Change player password after authorized key verification"""
-    data = request.json
-    player_id = data.get('player_id')
-    new_password = data.get('new_password')
-    
-    if not player_id or not new_password:
-        return jsonify({'error': 'Player ID and new password are required'}), 400
-    
-    # Find player and update password
-    player = Player.query.get(player_id)
-    if not player:
-        return jsonify({'error': 'Player not found'}), 404
-    
-    player.password = new_password
-    db.session.commit()
-    
-    return jsonify({
-        'message': 'Password changed successfully'
-    })
-
-@user_bp.route("/players/profile/<int:player_id>", methods=["GET"])
-def get_player_profile(player_id):
-    """Get current player's profile including authorized key"""
-    player = Player.query.get(player_id)
-    if not player:
-        return jsonify({'error': 'Player not found'}), 404
-    
-    return jsonify({
-        'id': player.id,
-        'name': player.name,
-        'password': player.password,  # For display in profile (will be masked in frontend)
-        'authorized_key': player.authorized_key,
-        'created_at': player.created_at.isoformat()
-    })
 
 @user_bp.route('/admin/clear-duplicate-players', methods=['POST'])
 def clear_duplicate_players():
