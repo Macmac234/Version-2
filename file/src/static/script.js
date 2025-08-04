@@ -112,14 +112,20 @@ function initializeAnimations() {
 // Player management
 async function checkCurrentPlayer() {
     try {
-        const response = await fetch('/api/players/current');
+        const response = await fetch("/api/players/current");
         if (response.ok) {
             const data = await response.json();
             currentPlayer = data;
             updatePlayerUI();
+        } else {
+            // If not logged in, clear currentPlayer
+            currentPlayer = null;
+            updatePlayerUI();
         }
     } catch (error) {
-        console.log('No player logged in');
+        console.log("Error checking current player:", error);
+        currentPlayer = null;
+        updatePlayerUI();
     }
 }
 
@@ -211,8 +217,8 @@ async function registerPlayer() {
         
         if (response.ok) {
             currentPlayer = data.player;
-            // Save to local storage as backup
-            savePlayerToStorage({ name, password });
+            // Save to local storage as backup (consider removing this if backend is primary source of truth)
+            // savePlayerToStorage({ name, password });
             feedback.innerHTML = '<span style="color: #28a745;">Registration successful! You are now logged in.</span>';
             nameInput.value = '';
             passwordInput.value = '';
@@ -231,18 +237,8 @@ async function registerPlayer() {
             }
         }
     } catch (error) {
-        console.error('Error registering player:', error);
-        // Fallback to local storage
-        savePlayerToStorage({ name, password });
-        currentPlayer = { name };
-        feedback.innerHTML = '<span style="color: #28a745;">Registration successful! You are now logged in.</span>';
-        nameInput.value = '';
-        passwordInput.value = '';
-        updatePlayerUI();
-        
-        setTimeout(() => {
-            closeCreatePlayerModal();
-        }, 2000);
+        console.error("Error registering player:", error);
+        feedback.innerHTML = 	erase<span style="color: #dc3545;">An error occurred during registration.</span>
     }
 }
 
@@ -316,7 +312,7 @@ function closeLoginModal() {
     document.body.style.overflow = 'auto';
 }
 
-function loginPlayer() {
+async function loginPlayer() {
     const nameInput = document.getElementById('login-name-input');
     const passwordInput = document.getElementById('login-password-input');
     const feedback = document.getElementById('login-feedback');
@@ -329,22 +325,19 @@ function loginPlayer() {
         return;
     }
     
-    // Check local storage first
-    const players = getPlayersFromStorage();
-    const player = players.find(p => p.name === name && p.password === password);
-    
-    if (player) {
-        currentPlayer = { name: player.name };
-        feedback.innerHTML = '<span style="color: #28a745;">Login successful!</span>';
-        updatePlayerUI();
+    try {
+        const response = await fetch('/api/players/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, password })
+        });
         
-        setTimeout(() => {
-            closeLoginModal();
-        }, 1500);
-    } else {
-        feedback.innerHTML = '<span style="color: #dc3545;">Invalid player name or password!</span>';
-    }
-}
+        const data = await response.json();
+        
+        if (response.ok) {
+            currentPlayer = data.player;
+            // Also ensure local storage is updated if it's still being used for some fallback or initial load
+            localStorage.setItem("cagz_current_player", JSON.stringify(currentPlayer));
 
 // Forgot Password Modal Functions
 function showForgotPasswordModal() {

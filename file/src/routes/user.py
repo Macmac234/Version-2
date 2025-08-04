@@ -85,12 +85,12 @@ def login_player():
         return jsonify({'error': 'Invalid credentials'}), 401
     
     # Store player in session
-    session['player_id'] = player.id
-    session['player_name'] = player.name
+    session["player_id"] = player.id
+    session["player_name"] = player.name
     
     return jsonify({
-        'message': 'Login successful',
-        'player': player.to_dict()
+        "message": "Login successful",
+        "player": player.to_dict()
     })
 
 @user_bp.route('/players/current', methods=['GET'])
